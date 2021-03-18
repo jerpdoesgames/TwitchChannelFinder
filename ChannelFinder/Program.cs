@@ -78,6 +78,13 @@ namespace ChannelFinder
                             for (int i = 0; i < streamList.Length; i++)
                             {
                                 curRatedStream = new RatedStream(streamList[i]);
+
+
+                                Task<TwitchLib.Api.Helix.Models.Streams.GetStreamTags.GetStreamTagsResponse> getStreamTagsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamTagsAsync(curRatedStream.streamData.UserId.ToString()));
+                                getStreamTagsTask.Wait();
+
+                                curRatedStream.tagData = getStreamTagsTask.Result.Data;
+
                                 finderCriteria.calculateRating(ref curRatedStream);
                                 ratedStreams.Add(curRatedStream);
                             }
@@ -86,7 +93,7 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title }));
                             }
 
                             Console.WriteLine("got some data");

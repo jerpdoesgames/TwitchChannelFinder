@@ -11,6 +11,7 @@ namespace ChannelFinder
         public string game { get; set; }
         public string channel { get; set; }
         public string action { get; set; }
+        public string tag { get; set; }
         public float value { get; set; }
         public int priority { get; set; }
     }
@@ -18,6 +19,22 @@ namespace ChannelFinder
 
     public class Criteria
     {
+        private bool hasTag(string tagName, RatedStream curStream)
+        {
+            for (int i=0; i < curStream.tagData.Length; i++)
+            {
+                TwitchLib.Api.Helix.Models.Common.Tag curTag = curStream.tagData[i];
+
+                // Rather than require a language to be specified, just check every language for a match.  Probably not a performance concern since this is running locally and Twitch is giving you every language by default.
+                foreach (KeyValuePair<string, string> curLocale in curStream.tagData[i].LocalizationNames)
+                {
+                    if (tagName == curLocale.Value.ToLower())
+                        return true;
+                }
+            }
+
+            return false;
+        }
 
         private bool isMatch(CriteriaElement curCriteria, RatedStream curStream)
         {
@@ -30,6 +47,9 @@ namespace ChannelFinder
                 return false;
 
             if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.streamData.UserName.ToLower())
+                return false;
+
+            if (!string.IsNullOrEmpty(curCriteria.tag) && !hasTag(curCriteria.tag.ToLower(), curStream))
                 return false;
 
             return true;
