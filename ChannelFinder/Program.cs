@@ -12,6 +12,7 @@ namespace ChannelFinder
     {
         private static string storagePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ChannelFinder");
         private const int FOLLOWING_PER_PAGE = 100;
+        private const int MAX_NONFOLLOWED_PER_PAGE = 5;
         private const int PAGE_COUNT_MAX = 10;  // Safety in case grabbing more than 1000 channels (and... I suppose up to 1000 streams) is too much to get in short order
 
         public static List<string> getStreamList(List<TwitchLib.Api.V5.Models.Users.UserFollow> followingList, int start = 0, int count = 25)
@@ -64,27 +65,48 @@ namespace ChannelFinder
 
                         followerList.AddRange(userFollowsTask.Result.Follows);
 
+                        // Get other games to add to the list (currently just whatever the streamer was last playing)
+                        List<string> getGameList = new List<string>();
+                        getGameList.Add(baseChannelInfoTask.Result.Game);
+                        Task<TwitchLib.Api.Helix.Models.Games.GetGamesResponse> getGameIDTask = Task.Run(() => apiObject.Helix.Games.GetGamesAsync(null, getGameList));
+                        getGameIDTask.Wait();
+
+                        List<string> gameIDList = new List<string>();
+                        for (int i=0; i < getGameIDTask.Result.Games.Length; i++)
+                        {
+                            gameIDList.Add(getGameIDTask.Result.Games[i].Id);
+                        }
+
+                        // Get a few streams (regardless of follow status) from those other games
+                        Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getGameStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, null, MAX_NONFOLLOWED_PER_PAGE, gameIDList));
+                        getGameStreamsTask.Wait();
+
+                        List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream> streamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getGameStreamsTask.Result.Streams);
+                        List<RatedStream> ratedStreams = new List<RatedStream>();
+                        RatedStream curRatedStream;
+
+                        // consolidate this dupe a little better
+                        for (int i = 0; i < streamList.Count; i++)
+                        {
+
+                            curRatedStream = new RatedStream(apiObject, streamList[i], 50);
+                            finderCriteria.calculateRating(ref curRatedStream);
+                            ratedStreams.Add(curRatedStream);
+                        }
+
                         if (followerList.Count > 0)
                         {
                             List<string> queryIDList = getStreamList(followerList, 0, FOLLOWING_PER_PAGE);
                             Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, null, FOLLOWING_PER_PAGE, null, null, "all", queryIDList));
                             getStreamsTask.Wait();
 
-                            TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream[] streamList = getStreamsTask.Result.Streams;
+                            // Probably rearrange this a bit so I can addrange earlier for multiple games worth of possibly-not-followed 
+                            streamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getStreamsTask.Result.Streams);
+                            streamList.AddRange(getGameStreamsTask.Result.Streams);
 
-                            List<RatedStream> ratedStreams = new List<RatedStream>();
-                            RatedStream curRatedStream;
-
-                            for (int i = 0; i < streamList.Length; i++)
+                            for (int i = 0; i < streamList.Count; i++)
                             {
-                                curRatedStream = new RatedStream(streamList[i]);
-
-
-                                Task<TwitchLib.Api.Helix.Models.Streams.GetStreamTags.GetStreamTagsResponse> getStreamTagsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamTagsAsync(curRatedStream.streamData.UserId.ToString()));
-                                getStreamTagsTask.Wait();
-
-                                curRatedStream.tagData = getStreamTagsTask.Result.Data;
-
+                                curRatedStream = new RatedStream(apiObject, streamList[i]);
                                 finderCriteria.calculateRating(ref curRatedStream);
                                 ratedStreams.Add(curRatedStream);
                             }
