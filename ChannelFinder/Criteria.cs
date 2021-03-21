@@ -8,6 +8,7 @@ namespace ChannelFinder
 {
     public class CriteriaElement
     {
+        public string language { get; set; }
         public string game { get; set; }
         public string channel { get; set; }
         public string action { get; set; }
@@ -38,10 +39,17 @@ namespace ChannelFinder
 
         private bool isMatch(CriteriaElement curCriteria, RatedStream curStream)
         {
+            string checkLang = curCriteria.language;
             string checkGame = curCriteria.game;
+
+            if (checkLang == "[[SAME]]")
+                checkLang = baseChannel.Language;
 
             if (checkGame == "[[SAME]]")
                 checkGame = baseChannel.Game;
+
+            if (!string.IsNullOrEmpty(checkLang) && checkLang != curStream.streamData.Language)
+                return false;
 
             if (!string.IsNullOrEmpty(checkGame) && checkGame != curStream.streamData.GameName)
                 return false;
