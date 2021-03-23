@@ -84,15 +84,6 @@ namespace ChannelFinder
                         List<RatedStream> ratedStreams = new List<RatedStream>();
                         RatedStream curRatedStream;
 
-                        // consolidate this dupe a little better
-                        for (int i = 0; i < streamList.Count; i++)
-                        {
-
-                            curRatedStream = new RatedStream(apiObject, streamList[i], 50);
-                            finderCriteria.calculateRating(ref curRatedStream);
-                            ratedStreams.Add(curRatedStream);
-                        }
-
                         if (followerList.Count > 0)
                         {
                             List<string> queryIDList = getStreamList(followerList, 0, FOLLOWING_PER_PAGE);
