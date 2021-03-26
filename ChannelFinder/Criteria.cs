@@ -15,6 +15,14 @@ namespace ChannelFinder
         public string tag { get; set; }
         public float value { get; set; }
         public int priority { get; set; }
+        public int viewersMin { get; set; }
+        public int viewersMax { get; set; }
+
+        public CriteriaElement()
+        {
+            viewersMin = -1;
+            viewersMax = -1;
+        }
     }
 
 
@@ -41,12 +49,19 @@ namespace ChannelFinder
         {
             string checkLang = curCriteria.language;
             string checkGame = curCriteria.game;
+            int viewerCount = curStream.streamData.ViewerCount;
 
             if (checkLang == "[[SAME]]")
                 checkLang = baseChannel.Language;
 
             if (checkGame == "[[SAME]]")
                 checkGame = baseChannel.Game;
+
+            if (curCriteria.viewersMin != -1 && viewerCount < curCriteria.viewersMin)
+                return false;
+
+            if (curCriteria.viewersMax != -1 && viewerCount > curCriteria.viewersMax)
+                return false;
 
             if (!string.IsNullOrEmpty(checkLang) && checkLang != curStream.streamData.Language)
                 return false;
