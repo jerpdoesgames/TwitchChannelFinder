@@ -107,8 +107,6 @@ namespace ChannelFinder
                             {
                                 Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Language)) }));
                             }
-
-                            Console.WriteLine("got some data");
                         }
                     }
                 }

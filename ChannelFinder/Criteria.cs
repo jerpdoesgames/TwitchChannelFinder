@@ -66,7 +66,7 @@ namespace ChannelFinder
             if (!string.IsNullOrEmpty(checkLang) && checkLang != curStream.streamData.Language)
                 return false;
 
-            if (!string.IsNullOrEmpty(checkGame) && checkGame != curStream.streamData.GameName)
+            if (!string.IsNullOrEmpty(checkGame) && curStream.streamData.GameName.ToLower().IndexOf(checkGame.ToLower()) == -1)
                 return false;
 
             if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.streamData.UserName.ToLower())
