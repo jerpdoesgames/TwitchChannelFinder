@@ -105,7 +105,7 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Language)) }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Language)), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
                             }
                         }
                     }

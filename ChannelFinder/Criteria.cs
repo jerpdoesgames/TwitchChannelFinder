@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChannelFinder
 {
@@ -17,17 +14,25 @@ namespace ChannelFinder
         public int priority { get; set; }
         public int viewersMin { get; set; }
         public int viewersMax { get; set; }
+        public int minutesLiveMin { get; set; }
+        public int minutesLiveMax { get; set; }
 
         public CriteriaElement()
         {
             viewersMin = -1;
             viewersMax = -1;
+            minutesLiveMin = -1;
+            minutesLiveMax = -1;
         }
     }
 
 
     public class Criteria
     {
+        public static TimeSpan getTimeSinceStart(RatedStream aStream)
+        {
+            return DateTime.Now.ToUniversalTime().Subtract(aStream.streamData.StartedAt);
+        }
         private bool hasTag(string tagName, RatedStream curStream)
         {
             for (int i=0; i < curStream.tagData.Length; i++)
@@ -72,7 +77,16 @@ namespace ChannelFinder
             if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.streamData.UserName.ToLower())
                 return false;
 
+
             if (!string.IsNullOrEmpty(curCriteria.tag) && !hasTag(curCriteria.tag.ToLower(), curStream))
+                return false;
+
+            double liveSeconds = getTimeSinceStart(curStream).TotalSeconds;
+
+            if (curCriteria.minutesLiveMin != -1 && liveSeconds < (curCriteria.minutesLiveMin * 60) )
+                return false;
+
+            if (curCriteria.minutesLiveMax != -1 && liveSeconds > (curCriteria.minutesLiveMax * 60))
                 return false;
 
             return true;
