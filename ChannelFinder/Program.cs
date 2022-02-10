@@ -11,16 +11,16 @@ namespace ChannelFinder
     {
         private static string storagePath = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ChannelFinder");
         private const int FOLLOWING_PER_PAGE = 100;
-        private const int MAX_NONFOLLOWED_PER_PAGE = 5;
+        private const int MAX_NONFOLLOWED_PER_PAGE = 20;
         private const int PAGE_COUNT_MAX = 10;  // Safety in case grabbing more than 1000 channels (and... I suppose up to 1000 streams) is too much to get in short order
 
-        public static List<string> getStreamList(List<TwitchLib.Api.V5.Models.Users.UserFollow> followingList, int start = 0, int count = 25)
+        public static List<string> getStreamList(List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow> followingList, int start = 0, int count = 25)
         {
             List<string> outputList = new List<string>();
 
             for (int i = start; i < count + start && i < followingList.Count; i++)
             {
-                outputList.Add(followingList[i].Channel.Id);
+                outputList.Add(followingList[i].ToUserId);
             }
 
             return outputList;
@@ -48,25 +48,25 @@ namespace ChannelFinder
                     apiObject.Settings.AccessToken = finderConfig.oauth;
                     apiObject.Settings.ClientId = finderConfig.client_id;
 
-                    Task<TwitchLib.Api.V5.Models.Channels.Channel> baseChannelInfoTask = Task.Run(() => apiObject.V5.Channels.GetChannelByIDAsync(finderConfig.channel_id.ToString()));
+                    Task<TwitchLib.Api.Helix.Models.Channels.GetChannelInformation.GetChannelInformationResponse> baseChannelInfoTask = Task.Run(() => apiObject.Helix.Channels.GetChannelInformationAsync(finderConfig.channel_id.ToString()));
                     baseChannelInfoTask.Wait();
 
-                    Task<TwitchLib.Api.V5.Models.Users.Users> baseUserInfoTask = Task.Run(() => apiObject.V5.Users.GetUserByNameAsync(baseChannelInfoTask.Result.Name));
+                    Task<TwitchLib.Api.Helix.Models.Users.GetUsers.GetUsersResponse> baseUserInfoTask = Task.Run(() => apiObject.Helix.Users.GetUsersAsync(new List<string> { baseChannelInfoTask.Result.Data[0].BroadcasterId }));
                     baseUserInfoTask.Wait();
 
-                    if (baseUserInfoTask.Result.Total == 1)
+                    if (baseUserInfoTask.Result.Users.Length == 1)
                     {
-                        finderCriteria.baseChannel = baseChannelInfoTask.Result;
-                        List<TwitchLib.Api.V5.Models.Users.UserFollow> followerList = new List<TwitchLib.Api.V5.Models.Users.UserFollow>();
+                        finderCriteria.baseChannel = baseChannelInfoTask.Result.Data[0];
+                        List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow> followerList = new List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow>();
 
-                        Task<TwitchLib.Api.V5.Models.Users.UserFollows> userFollowsTask = Task.Run(() => apiObject.V5.Users.GetUserFollowsAsync(baseUserInfoTask.Result.Matches[0].Id, FOLLOWING_PER_PAGE, 0));
+                        Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> userFollowsTask = Task.Run(() => apiObject.Helix.Users.GetUsersFollowsAsync(null, null, FOLLOWING_PER_PAGE, baseUserInfoTask.Result.Users[0].Id, null));
                         userFollowsTask.Wait();
 
                         followerList.AddRange(userFollowsTask.Result.Follows);
 
                         // Get other games to add to the list (currently just whatever the streamer was last playing)
                         List<string> getGameList = new List<string>();
-                        getGameList.Add(baseChannelInfoTask.Result.Game);
+                        getGameList.Add(baseChannelInfoTask.Result.Data[0].GameName);
                         Task<TwitchLib.Api.Helix.Models.Games.GetGamesResponse> getGameIDTask = Task.Run(() => apiObject.Helix.Games.GetGamesAsync(null, getGameList));
                         getGameIDTask.Wait();
 
@@ -105,7 +105,7 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Language)), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Data[0].BroadcasterLanguage)), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
                             }
                         }
                     }

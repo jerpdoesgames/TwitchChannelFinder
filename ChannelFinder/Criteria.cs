@@ -57,10 +57,10 @@ namespace ChannelFinder
             int viewerCount = curStream.streamData.ViewerCount;
 
             if (checkLang == "[[SAME]]")
-                checkLang = baseChannel.Language;
+                checkLang = baseChannel.BroadcasterLanguage;
 
             if (checkGame == "[[SAME]]")
-                checkGame = baseChannel.Game;
+                checkGame = baseChannel.GameName;
 
             if (curCriteria.viewersMin != -1 && viewerCount < curCriteria.viewersMin)
                 return false;
@@ -115,7 +115,7 @@ namespace ChannelFinder
         }
 
         public List<CriteriaElement> entries { get; set; }
-        public TwitchLib.Api.V5.Models.Channels.Channel baseChannel { get; set; }
+        public TwitchLib.Api.Helix.Models.Channels.GetChannelInformation.ChannelInformation baseChannel { get; set; }
 
         public void calculateRating(ref RatedStream curStream)
         {
