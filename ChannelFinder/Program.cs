@@ -59,10 +59,22 @@ namespace ChannelFinder
                         finderCriteria.baseChannel = baseChannelInfoTask.Result.Data[0];
                         List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow> followerList = new List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow>();
 
-                        Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> userFollowsTask = Task.Run(() => apiObject.Helix.Users.GetUsersFollowsAsync(null, null, FOLLOWING_PER_PAGE, baseUserInfoTask.Result.Users[0].Id, null));
-                        userFollowsTask.Wait();
+                        int curPage = 1;
+                        string curCursor = null;
+                        while (curPage <= PAGE_COUNT_MAX)
+                        {
+                            Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> userFollowsTask = Task.Run(() => apiObject.Helix.Users.GetUsersFollowsAsync(curCursor, null, FOLLOWING_PER_PAGE, baseUserInfoTask.Result.Users[0].Id, null));
+                            userFollowsTask.Wait();
 
-                        followerList.AddRange(userFollowsTask.Result.Follows);
+                            followerList.AddRange(userFollowsTask.Result.Follows);
+                            curCursor = userFollowsTask.Result.Pagination.Cursor;
+                            if (userFollowsTask.Result.Follows.Length == 0 || string.IsNullOrEmpty(curCursor))
+                            {
+                                break;
+                            }
+                            System.Threading.Thread.Sleep(250);
+                            curPage++;
+                        }
 
                         // Get other games to add to the list (currently just whatever the streamer was last playing)
                         List<string> getGameList = new List<string>();
