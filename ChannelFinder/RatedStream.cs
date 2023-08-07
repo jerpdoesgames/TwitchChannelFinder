@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using TwitchLib.Api;
-using System.Collections.Generic;
 
 namespace ChannelFinder
 {
@@ -8,32 +7,62 @@ namespace ChannelFinder
     {
         public float rating = 100;
 
-        string title { get; set; }
-        string[] tags { get; set; }
+        public string title { get; set; }
+        public string[] tags { get; set; }
+        public string language { get; set; }
+        public string game { get; set; }
+        public int viewerCount { get; set; }
+        public System.DateTime startedAt { get; set; }
+        public string broadcasterID { get; set; }
+        public bool followerOnly { get; set; }
+        public string userName { get; set; }
 
+
+        private void updateFollowerOnly(TwitchAPI aAPIObject)
+        {
+
+            Task<TwitchLib.Api.Helix.Models.Chat.ChatSettings.GetChatSettingsResponse> chatSettingsTask = Task.Run(() => aAPIObject.Helix.Chat.GetChatSettingsAsync(broadcasterID, broadcasterID));
+            chatSettingsTask.Wait();
+
+            if (chatSettingsTask.Result != null && chatSettingsTask.Result.Data.Length >= 0)
+            {
+                TwitchLib.Api.Helix.Models.Chat.ChatSettings.GetChatSettingsResponse curResponse = chatSettingsTask.Result;
+                followerOnly = curResponse.Data[0].FollowerMode;
+            }
+
+            System.Threading.Thread.Sleep(100);
+        }
 
         public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream aStreamData, float aInitialRating = 100)
         {
+            rating = aInitialRating;
 
             title = aStreamData.Title;
             tags = aStreamData.Tags;
+            language = aStreamData.Language;
+            game = aStreamData.GameName;
+            viewerCount = aStreamData.ViewerCount;
+            startedAt = aStreamData.StartedAt;
+            broadcasterID = aStreamData.UserId;
+            userName = aStreamData.UserName;
 
-            rating = aInitialRating;
-
-
-            // TODO: replace with get channel information:
-            // https://dev.twitch.tv/docs/api/reference/#get-stream-tags
-            // https://dev.twitch.tv/docs/api/reference/#get-channel-information
+            updateFollowerOnly(aAPIObject);
         }
 
         public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream aStreamData, float aInitialRating = 100)
         {
             rating = aInitialRating;
 
+            title = aStreamData.Title;
+            tags = aStreamData.Tags;
+            language = aStreamData.Language;
+            game = aStreamData.GameName;
+            viewerCount = aStreamData.ViewerCount;
+            startedAt = aStreamData.StartedAt;
+            broadcasterID = aStreamData.UserId;
+            userName = aStreamData.UserName;
 
-            // TODO: replace with get channel information:
-            // https://dev.twitch.tv/docs/api/reference/#get-stream-tags
-            // https://dev.twitch.tv/docs/api/reference/#get-channel-information
+            updateFollowerOnly(aAPIObject);
         }
     }
 }

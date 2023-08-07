@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using TwitchLib.Api;
-using System.Collections.Generic;
-using TwitchLib.Api.Helix.Models.Streams.GetStreams;
-using TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams;
+
+// https://id.twitch.tv/oauth2/authorize?client_id=[client_id]&redirect_uri=http://localhost&response_type=token&scope=user:read:follows
+// Required scopes: user:read:follows
 
 namespace ChannelFinder
 {
@@ -105,6 +106,8 @@ namespace ChannelFinder
                             foreach (TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream curStream in followedStreamsList)
                             {
                                 curRatedStream = new RatedStream(apiObject, curStream);
+                                finderCriteria.calculateRating(ref curRatedStream);
+                                ratedStreams.Add(curRatedStream);
                             }
 
                             foreach (TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream curStream in notFollowedStreamList)
@@ -118,7 +121,7 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.streamData.Tags), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.userName, curStream.game, curStream.title, string.Join(", ",curStream.tags), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m"), (curStream.viewerCount + " Viewers"), curStream.followerOnly ? "Follower-Only" : null }));
                             }
                         }
                     }

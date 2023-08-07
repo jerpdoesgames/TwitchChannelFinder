@@ -33,7 +33,7 @@ namespace ChannelFinder
     {
         public static TimeSpan getTimeSinceStart(RatedStream aStream)
         {
-            return DateTime.Now.ToUniversalTime().Subtract(aStream.streamData.StartedAt);
+            return DateTime.Now.ToUniversalTime().Subtract(aStream.startedAt);
         }
         private bool hasTag(string tagName, RatedStream curStream)
         {
@@ -52,7 +52,7 @@ namespace ChannelFinder
         {
             string checkLang = curCriteria.language;
             string checkGame = curCriteria.game;
-            int viewerCount = curStream.streamData.ViewerCount;
+            int viewerCount = curStream.viewerCount;
 
             if (checkLang == "[[SAME]]")
                 checkLang = baseChannel.BroadcasterLanguage;
@@ -66,13 +66,13 @@ namespace ChannelFinder
             if (curCriteria.viewersMax != -1 && viewerCount > curCriteria.viewersMax)
                 return false;
 
-            if (!string.IsNullOrEmpty(checkLang) && checkLang != curStream.streamData.Language)
+            if (!string.IsNullOrEmpty(checkLang) && checkLang.ToLower() != curStream.language.ToLower())
                 return false;
 
-            if (!string.IsNullOrEmpty(checkGame) && curStream.streamData.GameName.ToLower().IndexOf(checkGame.ToLower()) == -1)
+            if (!string.IsNullOrEmpty(checkGame) && curStream.game.ToLower().IndexOf(checkGame.ToLower()) == -1)
                 return false;
 
-            if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.streamData.UserName.ToLower())
+            if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.userName.ToLower())
                 return false;
 
 
@@ -85,6 +85,9 @@ namespace ChannelFinder
                 return false;
 
             if (curCriteria.minutesLiveMax != -1 && liveSeconds > (curCriteria.minutesLiveMax * 60))
+                return false;
+
+            if (curCriteria.followerOnly != -1 && ((curCriteria.followerOnly == 0 && curStream.followerOnly) || (curCriteria.followerOnly == 1 && !curStream.followerOnly)))
                 return false;
 
             return true;
