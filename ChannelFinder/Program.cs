@@ -4,6 +4,8 @@ using System.IO;
 using System.Threading.Tasks;
 using TwitchLib.Api;
 using System.Collections.Generic;
+using TwitchLib.Api.Helix.Models.Streams.GetStreams;
+using TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams;
 
 namespace ChannelFinder
 {
@@ -57,18 +59,20 @@ namespace ChannelFinder
                     if (baseUserInfoTask.Result.Users.Length == 1)
                     {
                         finderCriteria.baseChannel = baseChannelInfoTask.Result.Data[0];
-                        List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow> followerList = new List<TwitchLib.Api.Helix.Models.Users.GetUserFollows.Follow>();
+                        List<TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream> followedStreamsList = new List<TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream>();
 
                         int curPage = 1;
                         string curCursor = null;
                         while (curPage <= PAGE_COUNT_MAX)
                         {
-                            Task<TwitchLib.Api.Helix.Models.Users.GetUserFollows.GetUsersFollowsResponse> userFollowsTask = Task.Run(() => apiObject.Helix.Users.GetUsersFollowsAsync(curCursor, null, FOLLOWING_PER_PAGE, baseUserInfoTask.Result.Users[0].Id, null));
-                            userFollowsTask.Wait();
+                            Task<TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.GetFollowedStreamsResponse> followedStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetFollowedStreamsAsync(baseUserInfoTask.Result.Users[0].Id, FOLLOWING_PER_PAGE, curCursor));
 
-                            followerList.AddRange(userFollowsTask.Result.Follows);
-                            curCursor = userFollowsTask.Result.Pagination.Cursor;
-                            if (userFollowsTask.Result.Follows.Length == 0 || string.IsNullOrEmpty(curCursor))
+                            followedStreamsTask.Wait();
+
+                            followedStreamsList.AddRange(followedStreamsTask.Result.Data);
+                            curCursor = followedStreamsTask.Result.Pagination.Cursor;
+
+                            if (followedStreamsTask.Result.Data.Length == 0 || string.IsNullOrEmpty(curCursor))
                             {
                                 break;
                             }
@@ -92,23 +96,20 @@ namespace ChannelFinder
                         Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getGameStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, MAX_NONFOLLOWED_PER_PAGE, gameIDList));
                         getGameStreamsTask.Wait();
 
-                        List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream> streamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getGameStreamsTask.Result.Streams);
+                        List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream> notFollowedStreamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getGameStreamsTask.Result.Streams);
                         List<RatedStream> ratedStreams = new List<RatedStream>();
                         RatedStream curRatedStream;
 
-                        if (followerList.Count > 0)
+                        if (followedStreamsList.Count > 0 || notFollowedStreamList.Count > 0)
                         {
-                            List<string> queryIDList = getStreamList(followerList, 0, FOLLOWING_PER_PAGE);
-                            Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, FOLLOWING_PER_PAGE, null, null, queryIDList));
-                            getStreamsTask.Wait();
-
-                            // Probably rearrange this a bit so I can addrange earlier for multiple games worth of possibly-not-followed 
-                            streamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getStreamsTask.Result.Streams);
-                            streamList.AddRange(getGameStreamsTask.Result.Streams);
-
-                            for (int i = 0; i < streamList.Count; i++)
+                            foreach (TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream curStream in followedStreamsList)
                             {
-                                curRatedStream = new RatedStream(apiObject, streamList[i]);
+                                curRatedStream = new RatedStream(apiObject, curStream);
+                            }
+
+                            foreach (TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream curStream in notFollowedStreamList)
+                            {
+                                curRatedStream = new RatedStream(apiObject, curStream);
                                 finderCriteria.calculateRating(ref curRatedStream);
                                 ratedStreams.Add(curRatedStream);
                             }
@@ -117,7 +118,7 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.tagList(baseChannelInfoTask.Result.Data[0].BroadcasterLanguage)), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.streamData.UserName, curStream.streamData.GameName, curStream.streamData.Title, string.Join(", ",curStream.streamData.Tags), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m") }));
                             }
                         }
                     }

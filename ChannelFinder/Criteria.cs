@@ -16,6 +16,7 @@ namespace ChannelFinder
         public int viewersMax { get; set; }
         public int minutesLiveMin { get; set; }
         public int minutesLiveMax { get; set; }
+        public int followerOnly { get; set; }
 
         public CriteriaElement()
         {
@@ -23,6 +24,7 @@ namespace ChannelFinder
             viewersMax = -1;
             minutesLiveMin = -1;
             minutesLiveMax = -1;
+            followerOnly = -1;  // -1 for no check, 0 for no, 1 for yes
         }
     }
 
@@ -35,16 +37,12 @@ namespace ChannelFinder
         }
         private bool hasTag(string tagName, RatedStream curStream)
         {
-            for (int i=0; i < curStream.tagData.Length; i++)
+            for (int i=0; i < curStream.tags.Length; i++)
             {
-                TwitchLib.Api.Helix.Models.Common.Tag curTag = curStream.tagData[i];
+                string curTag = curStream.tags[i];
 
-                // Rather than require a language to be specified, just check every language for a match.  Probably not a performance concern since this is running locally and Twitch is giving you every language by default.
-                foreach (KeyValuePair<string, string> curLocale in curStream.tagData[i].LocalizationNames)
-                {
-                    if (tagName == curLocale.Value.ToLower())
-                        return true;
-                }
+                if (tagName == curTag.ToLower())
+                    return true;
             }
 
             return false;
