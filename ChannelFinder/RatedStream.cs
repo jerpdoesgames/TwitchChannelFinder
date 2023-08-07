@@ -14,6 +14,7 @@ namespace ChannelFinder
         {
             List<string> output = new List<string>();
 
+            // TODO: Switch to just plain string tags
             foreach (TwitchLib.Api.Helix.Models.Common.Tag curTag in tagData)
             {
                 foreach (KeyValuePair<string, string> curLocale in curTag.LocalizationNames)
@@ -31,6 +32,10 @@ namespace ChannelFinder
             streamData = aStreamData;
             rating = aInitialRating;
 
+
+            // TODO: replace with get channel information:
+            // https://dev.twitch.tv/docs/api/reference/#get-stream-tags
+            // https://dev.twitch.tv/docs/api/reference/#get-channel-information
             Task<TwitchLib.Api.Helix.Models.Streams.GetStreamTags.GetStreamTagsResponse> getStreamTagsTask = Task.Run(() => aAPIObject.Helix.Streams.GetStreamTagsAsync(streamData.UserId.ToString()));
             getStreamTagsTask.Wait();
 

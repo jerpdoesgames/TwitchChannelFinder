@@ -89,7 +89,7 @@ namespace ChannelFinder
                         }
 
                         // Get a few streams (regardless of follow status) from those other games
-                        Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getGameStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, null, MAX_NONFOLLOWED_PER_PAGE, gameIDList));
+                        Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getGameStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, MAX_NONFOLLOWED_PER_PAGE, gameIDList));
                         getGameStreamsTask.Wait();
 
                         List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream> streamList = new List<TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream>(getGameStreamsTask.Result.Streams);
@@ -99,7 +99,7 @@ namespace ChannelFinder
                         if (followerList.Count > 0)
                         {
                             List<string> queryIDList = getStreamList(followerList, 0, FOLLOWING_PER_PAGE);
-                            Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, null, FOLLOWING_PER_PAGE, null, null, "all", queryIDList));
+                            Task<TwitchLib.Api.Helix.Models.Streams.GetStreams.GetStreamsResponse> getStreamsTask = Task.Run(() => apiObject.Helix.Streams.GetStreamsAsync(null, FOLLOWING_PER_PAGE, null, null, queryIDList));
                             getStreamsTask.Wait();
 
                             // Probably rearrange this a bit so I can addrange earlier for multiple games worth of possibly-not-followed 
