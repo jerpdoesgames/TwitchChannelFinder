@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using TwitchLib.Api;
 
 namespace ChannelFinder
@@ -16,6 +17,15 @@ namespace ChannelFinder
         public string broadcasterID { get; set; }
         public bool followerOnly { get; set; }
         public string userName { get; set; }
+        private string m_Thumbnail;
+        public string thumbnail {
+            get { return m_Thumbnail; }
+            set
+            {
+                m_Thumbnail = value.Replace("{width}", 320.ToString());
+                m_Thumbnail = m_Thumbnail.Replace("{height}", 180.ToString());
+            }
+        }
 
 
         private void updateFollowerOnly(TwitchAPI aAPIObject)
@@ -45,6 +55,7 @@ namespace ChannelFinder
             startedAt = aStreamData.StartedAt;
             broadcasterID = aStreamData.UserId;
             userName = aStreamData.UserName;
+            thumbnail = aStreamData.ThumbnailUrl;
 
             updateFollowerOnly(aAPIObject);
         }
@@ -61,6 +72,7 @@ namespace ChannelFinder
             startedAt = aStreamData.StartedAt;
             broadcasterID = aStreamData.UserId;
             userName = aStreamData.UserName;
+            thumbnail = aStreamData.ThumbnailUrl;
 
             updateFollowerOnly(aAPIObject);
         }

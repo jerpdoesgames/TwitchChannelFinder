@@ -36,7 +36,44 @@ namespace ChannelFinder
 
             string criteriaPath = System.IO.Path.Combine(storagePath, "channel_criteria.json");
             string configPath = System.IO.Path.Combine(storagePath, "finder_config.json");
-            
+
+            string outputPath = System.IO.Path.Combine(storagePath, "output","output.html");
+
+            string pageTemplate = @"
+                <!DOCTYPE html PUBLIC ""-//W3C//DTD XHTML 1.0 Transitional//EN"" ""http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"">
+                <html xmlns=""http://www.w3.org/1999/xhtml"">
+                <head>
+                    <title>Twitch Channel Finder - By Jerp</title>
+                    <meta charset=""UTF-8"">
+                    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+                    <link rel=""stylesheet"" type=""text/css"" href=""style.css"" />
+                </head>
+
+                <body>
+                {0}
+                </body>
+
+                </html>
+            ";
+
+            string streamTemplate = @"
+                <h2 class=""streamChannel""><span class=""streamScore"">{6}</span><a href=""https://twitch.tv/{0}"">{0}</a></h2>
+                <h3 class=""streamTitle"">{1}</a></h3>
+                <a href=""https://twitch.tv/{0}""><img class=""streamThumbnail"" src=""{2}""/></a>
+                <div class=""streamTagList"">
+                    {3}
+                </div>
+                <div class=""streamMiscInfo"">
+                    {4} viewers<br/>
+                    Streaming for {5} minutes<br/>
+                </div>
+                <hr/>
+            ";
+
+            string tagTemplate = @"
+                <span class=""streamTag"">{0}</span>
+            ";
+
             if (File.Exists(configPath))
             {
                 string configText = File.ReadAllText(configPath);
@@ -101,6 +138,9 @@ namespace ChannelFinder
                         List<RatedStream> ratedStreams = new List<RatedStream>();
                         RatedStream curRatedStream;
 
+
+                        string streamOutputPageContents = "";
+
                         if (followedStreamsList.Count > 0 || notFollowedStreamList.Count > 0)
                         {
                             foreach (TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream curStream in followedStreamsList)
@@ -121,9 +161,24 @@ namespace ChannelFinder
 
                             foreach(RatedStream curStream in ratedStreams)
                             {
-                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.userName, curStream.game, curStream.title, string.Join(", ",curStream.tags), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m"), (curStream.viewerCount + " Viewers"), curStream.followerOnly ? "Follower-Only" : null }));
+                                Console.WriteLine(string.Join("|", new string[] { curStream.rating.ToString(), curStream.userName, curStream.game, curStream.title, curStream.tags != null ? string.Join(", ", curStream.tags) : "", (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString() + "m"), (curStream.viewerCount + " Viewers"), curStream.followerOnly ? "Follower-Only" : "" }));
+                                string streamOutputPageTags = "";
+
+                                if (curStream.tags != null && curStream.tags.Length > 0)
+                                {
+                                    foreach (string curTag in curStream.tags)
+                                    {
+                                        streamOutputPageTags += string.Format(tagTemplate, curTag);
+                                    }
+                                }
+
+                                streamOutputPageContents += string.Format(streamTemplate, curStream.userName, curStream.title, curStream.thumbnail, streamOutputPageTags, curStream.viewerCount.ToString(), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString()), curStream.rating.ToString());
+
                             }
                         }
+
+                        File.WriteAllText(outputPath, string.Format(pageTemplate, streamOutputPageContents));
+                        System.Diagnostics.Process.Start(outputPath);
                     }
                 }
             }

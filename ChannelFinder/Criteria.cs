@@ -37,13 +37,17 @@ namespace ChannelFinder
         }
         private bool hasTag(string tagName, RatedStream curStream)
         {
-            for (int i=0; i < curStream.tags.Length; i++)
+            if (curStream.tags != null && curStream.tags.Length > 0)
             {
-                string curTag = curStream.tags[i];
+                for (int i = 0; i < curStream.tags.Length; i++)
+                {
+                    string curTag = curStream.tags[i];
 
-                if (tagName == curTag.ToLower())
-                    return true;
+                    if (tagName == curTag.ToLower())
+                        return true;
+                }
             }
+
 
             return false;
         }
