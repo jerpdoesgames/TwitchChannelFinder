@@ -17,6 +17,7 @@ namespace ChannelFinder
         public int minutesLiveMin { get; set; }
         public int minutesLiveMax { get; set; }
         public int followerOnly { get; set; }
+        public string title { get; set; }
 
         public CriteriaElement()
         {
@@ -70,6 +71,12 @@ namespace ChannelFinder
             if (curCriteria.viewersMax != -1 && viewerCount > curCriteria.viewersMax)
                 return false;
 
+            if (checkGame == "[[DIFF]]" && baseChannel.GameName.ToLower() == curStream.game.ToLower())
+                return false;
+
+            if (checkLang == "[[DIFF]]" && baseChannel.BroadcasterLanguage.ToLower() == curStream.language.ToLower())
+                return false;
+
             if (!string.IsNullOrEmpty(checkLang) && checkLang.ToLower() != curStream.language.ToLower())
                 return false;
 
@@ -77,6 +84,9 @@ namespace ChannelFinder
                 return false;
 
             if (!string.IsNullOrEmpty(curCriteria.channel) && curCriteria.channel.ToLower() != curStream.userName.ToLower())
+                return false;
+
+            if (!string.IsNullOrEmpty(curCriteria.title) && !curStream.title.ToLower().Contains(curCriteria.title.ToLower()))
                 return false;
 
 
@@ -120,6 +130,7 @@ namespace ChannelFinder
         }
 
         public List<CriteriaElement> entries { get; set; }
+        public List<string> categories { get; set; }
         public TwitchLib.Api.Helix.Models.Channels.GetChannelInformation.ChannelInformation baseChannel { get; set; }
 
         public void calculateRating(ref RatedStream curStream)

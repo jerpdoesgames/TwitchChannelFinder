@@ -6,7 +6,7 @@ namespace ChannelFinder
 {
     public class RatedStream
     {
-        public float rating = 100;
+        public float rating = 50;
 
         public string title { get; set; }
         public string[] tags { get; set; }
@@ -43,7 +43,7 @@ namespace ChannelFinder
             System.Threading.Thread.Sleep(100);
         }
 
-        public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream aStreamData, float aInitialRating = 100)
+        public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetFollowedStreams.Stream aStreamData, float aInitialRating = 50)
         {
             rating = aInitialRating;
 
@@ -60,7 +60,7 @@ namespace ChannelFinder
             updateFollowerOnly(aAPIObject);
         }
 
-        public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream aStreamData, float aInitialRating = 100)
+        public RatedStream(TwitchAPI aAPIObject, TwitchLib.Api.Helix.Models.Streams.GetStreams.Stream aStreamData, float aInitialRating = 50)
         {
             rating = aInitialRating;
 

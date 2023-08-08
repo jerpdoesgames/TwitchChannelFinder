@@ -59,10 +59,12 @@ namespace ChannelFinder
             string streamTemplate = @"
                 <h2 class=""streamChannel""><span class=""streamScore"">{6}</span><a href=""https://twitch.tv/{0}"">{0}</a></h2>
                 <h3 class=""streamTitle"">{1}</a></h3>
+                <p>{7}</p>
                 <a href=""https://twitch.tv/{0}""><img class=""streamThumbnail"" src=""{2}""/></a>
                 <div class=""streamTagList"">
                     {3}
                 </div>
+                {8}
                 <div class=""streamMiscInfo"">
                     {4} viewers<br/>
                     Streaming for {5} minutes<br/>
@@ -118,9 +120,20 @@ namespace ChannelFinder
                             curPage++;
                         }
 
-                        // Get other games to add to the list (currently just whatever the streamer was last playing)
+                        // Get other games to add to the list
                         List<string> getGameList = new List<string>();
                         getGameList.Add(baseChannelInfoTask.Result.Data[0].GameName);
+                        if (finderCriteria.categories != null && finderCriteria.categories.Count > 0)
+                        {
+                            foreach (string curCategory in finderCriteria.categories)
+                            {
+                                if (getGameList.Count < 100 && curCategory.ToLower() != baseChannelInfoTask.Result.Data[0].GameName.ToLower())  // TODO: make 100 a global -- it's the total categories you can request at a time
+                                {
+                                    getGameList.Add(curCategory);
+                                }
+                            }
+                        }
+                        
                         Task<TwitchLib.Api.Helix.Models.Games.GetGamesResponse> getGameIDTask = Task.Run(() => apiObject.Helix.Games.GetGamesAsync(null, getGameList));
                         getGameIDTask.Wait();
 
@@ -172,8 +185,8 @@ namespace ChannelFinder
                                     }
                                 }
 
-                                streamOutputPageContents += string.Format(streamTemplate, curStream.userName, curStream.title, curStream.thumbnail, streamOutputPageTags, curStream.viewerCount.ToString(), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString()), curStream.rating.ToString());
-
+                                string followerOnlyWarning = curStream.followerOnly ? "<p>FOLLOWER-ONLY</p>" : "";
+                                streamOutputPageContents += string.Format(streamTemplate, curStream.userName, curStream.title, curStream.thumbnail, streamOutputPageTags, curStream.viewerCount.ToString(), (Math.Round(Criteria.getTimeSinceStart(curStream).TotalMinutes, 0).ToString()), Math.Round(curStream.rating, 0).ToString(), curStream.game, followerOnlyWarning);
                             }
                         }
 
