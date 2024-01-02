@@ -1,0 +1,559 @@
+{
+	"categories":
+	[
+		"Elden Ring",
+		"Guilty Gear: Strive",
+		"Returnal",
+		"Shadows of Doubt",
+		"Street Fighter 6",
+		"Timespinner",
+		"Hydorah",
+		"Super Hydorah",
+		"In Verbis Virtus",
+		"Quadrilateral Cowboy",
+		"ZeroRanger",
+		"Radio the Universe",
+		"Hunt the Night",
+		"Lies of P",
+		"Murtop",
+		"Mysteries Under Lake Ophelia",
+		"Kapital Punishment 22XX",
+		"Withering Rooms",
+		"Darkwood",
+		"Ghost Song",
+		"Environmental Station Alpha",
+		"SIFU",
+		"Rogue Legacy 2",
+		"Monolith",
+		"Inscryption",
+		"Unsighted",
+		"Rebel Transmute",
+		"R-TYPE FINAL 2",
+		"Shattered: Tale of the Forgotten King",
+		"Overwhelm",
+		"Rival Megagun",
+		"PSYCRON",
+		"Moons of Darsalon",
+		"Gradius V",
+		"R-Type Delta",
+		"R-Type Final"
+	],
+	"entries": [
+		{
+			"language": "[[SAME]]",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"tag": "FirstPlaythrough",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "CasualPlaythrough",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"tag": "ASMR",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"tag": "chill",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "BackseatingAllowed",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"tag": "vtuberenglish",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"tag": "vtube",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"tag": "envtuber",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"tag": "vtuber",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"title": "vtuber",
+			"action": "subtract",
+			"value": 5
+		},
+		{
+			"title": "no mic",
+			"action": "subtract",
+			"value": 25
+		},
+		{
+			"game": "Street Fighter 6",
+			"action": "subtract",
+			"value": 40
+		},
+		{
+			"game": "Armored Core VI: Fires of Rubicon",
+			"action": "subtract",
+			"value": 40
+		},
+		{
+			"game": "Street Fighter 6",
+			"tag": "Jamie",
+			"action": "add",
+			"value": 40
+		},
+		{
+			"game": "Street Fighter 6",
+			"title": "Jamie",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Escape from Tarkov",
+			"action": "subtract",
+			"value": 75
+		},
+		{
+			"game": "ELDEN RING",
+			"tag": "Invasions",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "NoBackseating",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "NoBackseatGaming",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "Pepega",
+			"action": "subtract",
+			"value": 25
+		},
+		{
+			"tag": "NoSpoilers",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"tag": "Gacha",
+			"action": "subtract",
+			"value": 20
+		},
+		{
+			"tag": "Chatty",
+			"action": "subtract",
+			"value": 20
+		},
+		{
+			"tag": "ClosedCaptions",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Talk Shows & Podcasts",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Furi",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"game": "Street Fighter V",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Just Chatting",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "[[SAME]]",
+			"action": "add",
+			"value": 15
+		},
+		{
+			"game": "Spelunky",
+			"action": "subtract",
+			"value": 20
+		},
+		{
+			"game": "Spelunky 2",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "ZeroRanger",
+			"action": "add",
+			"value": 35
+		},
+		{
+			"game": "minecraft",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "Super Mario Maker 2",
+			"minutesLiveMax": 60,
+			"viewersMax": 35,
+			"action": "add",
+			"value": 5,
+			"tag": "ViewerLevels"
+		},
+		{
+			"game": "Hydorah",
+			"action": "add",
+			"value": 25
+		},
+		{
+			"game": "STG Shmups",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"game": "Retro",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Isaac",
+			"action": "subtract",
+			"value": 20
+		},
+		{
+			"game": "Kenshi",
+			"action": "add",
+			"value": 20
+		},
+		{
+			"game": "Dragon's Dogma",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"game": "Science & Technology",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Super Metroid",
+			"action": "add",
+			"value": 15
+		},
+		{
+			"game": "Immortals Fenyx Rising",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "Exanima",
+			"action": "subtract",
+			"value": 75
+		},
+		{
+			"game": "Absolver",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "Diablo III",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "Dark Souls II",
+			"action": "add",
+			"value": 10
+		},
+		{
+			"game": "Dark Souls III",
+			"action": "add",
+			"value": 5
+		},
+		{
+			"game": "Shattered: Tale of the Forgotten King",
+			"action": "add",
+			"value": 25
+		},
+		{
+			"game": "Dark Souls",
+			"action": "multiply",
+			"value": 0.4
+		},
+		{
+			"game": "ELDEN RING",
+			"action": "multiply",
+			"value": 0.5
+		},
+		{
+			"game": "Street Fighter 6",
+			"action": "multiply",
+			"value": 0.7
+		},
+		{
+			"game": "ELDEN RING",
+			"tag": "ChallengeRun",
+			"action": "multiply",
+			"value": 0.8
+		},
+		{
+			"game": "ELDEN RING",
+			"tag": "Deathless",
+			"action": "multiply",
+			"value": 0.8
+		},		
+		{
+			"game": "Super Mario Maker 2",
+			"action": "multiply",
+			"value": 0.4
+		},
+		{
+			"game": "Guilty Gear: Strive",
+			"action": "multiply",
+			"value": 0.65
+		},
+		{
+			"game": "Guilty Gear: Strive",
+			"title": "faust",
+			"action": "add",
+			"value": 15
+		},
+		{
+			"game": "Guilty Gear: Strive",
+			"tag": "faust",
+			"action": "add",
+			"value": 15
+		},
+		{
+			"game": "Celeste",
+			"action": "multiply",
+			"value": 0.5
+		},
+		{
+			"game": "VALORANT",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "ARK: Survival Evolved",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Forza",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Overwatch",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"title": "Bloodborne",
+			"action": "multiply",
+			"value": 0.5
+		},
+		{
+			"game": "Bloodborne",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Destiny",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Dead by Daylight",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Loop Hero",
+			"action": "subtract",
+			"value": 40
+		},
+		{
+			"game": "monster hunter",
+			"action": "subtract",
+			"value": 40
+		},
+		{
+			"game": "Red Dead Redemption",
+			"action": "subtract",
+			"value": 55
+		},
+		{
+			"game": "pokemon",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "Pokémon",
+			"action": "subtract",
+			"value": 50
+		},
+		{
+			"game": "kingdom hearts",
+			"action": "subtract",
+			"value": 40
+		},
+		{
+			"game": "Hollow Knight",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Super Smash Bros",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "World of Warcraft",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "FINAL FANTASY XIV Online",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Fortnite",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Assassin's Creed IV Black Flag",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Sea of Thieves",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "Apex Legends",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"game": "SIFU",
+			"action": "multiply",
+			"value": 0.9
+		},
+		{
+			"game": "BlazBlue: Central Fiction",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"channel": "jerp",
+			"game": "Void Stranger",
+			"action": "add",
+			"value": 25
+		},
+		{
+			"channel": "jerp",
+			"action": "multiply",
+			"value": 1.25
+		},
+		{
+			"viewersMin": 200,
+			"action": "multiply",
+			"value": 0.9
+		},
+		{
+			"viewersMin": 500,
+			"action": "multiply",
+			"value": 0.7
+		},
+		{
+			"viewersMin": 1000,
+			"action": "multiply",
+			"value": 0.5
+		},
+		{
+			"game": "[[SAME]]",
+			"viewersMin": 50,
+			"viewersMax": 199,
+			"action": "multiply",
+			"value": 0.5
+		},
+		{
+			"game": "[[SAME]]",
+			"viewersMin": 200,
+			"action": "multiply",
+			"value": 0.25
+		},
+		{
+			"viewersMin": 10,
+			"viewersMax": 20,
+			"action": "add",
+			"value": 5
+		},
+		{
+			"minutesLiveMax": 30,
+			"action": "add",
+			"value": 15
+		},
+		{
+			"language": "[[DIFF]]",
+			"action": "multiply",
+			"value": 0
+		},
+		{
+			"followerOnly": 1,
+			"action": "subtract",
+			"value": 100
+		},
+		{
+			"minutesLiveMin": 60,
+			"action": "subtract",
+			"value": 10
+		},
+		{
+			"minutesLiveMin": 120,
+			"action": "subtract",
+			"value": 15
+		},
+		{
+			"minutesLiveMin": 180,
+			"action": "subtract",
+			"value": 25
+		},
+		{
+			"viewersMax": 4,
+			"action": "subtract",
+			"value": 10
+		},
+		{
+			"viewersMin": 5,
+			"viewersMax": 9,
+			"action": "subtract",
+			"value": 5
+		}
+	]
+}
